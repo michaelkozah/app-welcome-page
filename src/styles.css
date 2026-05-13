@@ -2,6 +2,8 @@
 @source "../src";
 @import "tw-animate-css";
 
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
 @custom-variant dark (&:is(.dark *));
 
 /*
@@ -63,8 +65,13 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --background: oklch(0.985 0 0);
+  --foreground: oklch(0.18 0.005 280);
+  --surface: oklch(0.985 0 0);
+  --canvas: oklch(0.965 0.003 280);
+  --brand: oklch(0.32 0.04 155);
+  --brand-light: oklch(0.42 0.05 155);
+  --brand-foreground: oklch(0.985 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
