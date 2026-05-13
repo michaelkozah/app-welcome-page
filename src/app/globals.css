@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #FDF8F0;
+  --color-foreground: #3A3632;
+  --color-muted-foreground: #8A8580;
+  --color-wine: #6B1D3A;
+  --color-wine-light: #8B2D52;
+  --color-wine-dark: #4A1228;
+  --color-gold: #D4A957;
+  --color-gold-light: #E8C97A;
+  --color-cream: #FDF8F0;
+  --color-cream-dark: #F5EDE0;
+  --color-stone: #3A3632;
+  --color-stone-light: #5A5550;
+  --color-stone-muted: #8A8580;
+  --color-primary: #6B1D3A;
+  --color-primary-foreground: #FFFFFF;
+  --color-ring: #D4A957;
+  --font-display: var(--font-playfair);
+  --font-body: var(--font-dm-sans);
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-stone);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+/* Fade-up animation for scroll */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+/* Stagger delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
