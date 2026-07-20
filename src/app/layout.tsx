@@ -27,10 +27,6 @@ export const metadata: Metadata = {
       "Your city guide to Zahlé. Local news, restaurants, events, and places — all in one app.",
     type: "website",
   },
-  // Native Safari "Smart App Banner" on iOS (GET/OPEN at the top of the page).
-  itunes: {
-    appId: "6760541995",
-  },
 };
 
 export default function RootLayout({

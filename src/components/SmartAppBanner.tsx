@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const APP_STORE_URL = "https://apps.apple.com/lb/app/zahle/id6760541995";
 const PLAY_STORE_URL =
@@ -9,28 +10,20 @@ const DISMISS_KEY = "zahle-app-banner-dismissed-at";
 const DISMISS_DAYS = 14;
 
 /**
- * "Get the app" banner for mobile browsers.
- * - iOS Safari is excluded: it shows the native Smart App Banner instead
- *   (the `itunes` metadata in layout.tsx) — showing both would double up.
- * - Android + iOS non-Safari browsers (Chrome/Firefox/in-app webviews) get
- *   this banner, linking to the right store.
- * - Dismissal is remembered for 14 days.
+ * "Get the app" banner for ALL mobile browsers (iOS + Android), pinned to the
+ * bottom of the viewport so it stays visible while scrolling. Replaces the
+ * native iOS Smart App Banner (which is small, top-anchored, and scrolls away).
+ * Dismissal is remembered for 14 days. Never shows on desktop.
  */
 export default function SmartAppBanner() {
   const [storeUrl, setStoreUrl] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const ua = navigator.userAgent || "";
     const isAndroid = /android/i.test(ua);
     const isIOS = /iphone|ipad|ipod/i.test(ua);
     if (!isAndroid && !isIOS) return; // desktop: never show
-
-    if (isIOS) {
-      // Real Safari (not Chrome/Firefox/Edge/in-app) shows the native banner.
-      const isSafari =
-        /safari/i.test(ua) && !/crios|fxios|edgios|gsa|instagram|fbav/i.test(ua);
-      if (isSafari) return;
-    }
 
     try {
       const dismissedAt = Number(localStorage.getItem(DISMISS_KEY) || 0);
@@ -42,6 +35,9 @@ export default function SmartAppBanner() {
     }
 
     setStoreUrl(isAndroid ? PLAY_STORE_URL : APP_STORE_URL);
+    // Slide up shortly after load so it doesn't compete with the hero paint.
+    const t = setTimeout(() => setVisible(true), 600);
+    return () => clearTimeout(t);
   }, []);
 
   if (!storeUrl) return null;
@@ -52,36 +48,50 @@ export default function SmartAppBanner() {
     } catch {
       /* ignore */
     }
-    setStoreUrl(null);
+    setVisible(false);
+    setTimeout(() => setStoreUrl(null), 300);
   };
 
   return (
-    <div className="sticky top-0 z-[60] flex items-center gap-3 bg-wine-dark/95 backdrop-blur px-3 py-2.5 border-b border-white/10">
-      <button
-        onClick={dismiss}
-        aria-label="Dismiss"
-        className="text-white/40 text-lg leading-none px-1 shrink-0"
-      >
-        ×
-      </button>
-      <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-gold to-gold-light flex items-center justify-center shrink-0">
-        <span className="font-display font-bold text-wine-dark text-lg">Z</span>
+    <div
+      className={`fixed inset-x-0 bottom-0 z-[100] transition-transform duration-300 ease-out ${
+        visible ? "translate-y-0" : "translate-y-full"
+      }`}
+    >
+      <div className="bg-wine-dark/95 backdrop-blur-md border-t border-gold/25 shadow-[0_-8px_30px_rgba(0,0,0,0.35)] px-4 pt-3.5 pb-[max(0.875rem,env(safe-area-inset-bottom))]">
+        <div className="mx-auto flex max-w-xl items-center gap-3.5">
+          <Image
+            src="/app-icon.jpg"
+            alt="Zahlé App icon"
+            width={52}
+            height={52}
+            className="h-13 w-13 shrink-0 rounded-xl border border-white/10 object-cover"
+            style={{ width: 52, height: 52 }}
+          />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-base font-bold leading-tight text-white">
+              Zahlé App
+            </p>
+            <p className="truncate text-sm leading-snug text-white/60">
+              News, events &amp; places — free
+            </p>
+          </div>
+          <a
+            href={storeUrl}
+            rel="noopener"
+            className="shrink-0 rounded-full bg-gold px-6 py-2.5 text-base font-bold text-wine-dark active:scale-95 transition-transform"
+          >
+            Get
+          </a>
+          <button
+            onClick={dismiss}
+            aria-label="Dismiss"
+            className="shrink-0 -mr-1 px-1.5 py-2 text-xl leading-none text-white/40"
+          >
+            ×
+          </button>
+        </div>
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-white text-sm font-semibold leading-tight truncate">
-          Zahlé App
-        </p>
-        <p className="text-white/50 text-xs leading-tight truncate">
-          News, events &amp; places — free
-        </p>
-      </div>
-      <a
-        href={storeUrl}
-        rel="noopener"
-        className="shrink-0 bg-gold text-wine-dark text-sm font-bold px-4 py-1.5 rounded-full"
-      >
-        Get
-      </a>
     </div>
   );
 }
