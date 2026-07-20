@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SmartAppBanner from "@/components/SmartAppBanner";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -26,6 +27,10 @@ export const metadata: Metadata = {
       "Your city guide to Zahlé. Local news, restaurants, events, and places — all in one app.",
     type: "website",
   },
+  // Native Safari "Smart App Banner" on iOS (GET/OPEN at the top of the page).
+  itunes: {
+    appId: "6760541995",
+  },
 };
 
 export default function RootLayout({
@@ -39,6 +44,7 @@ export default function RootLayout({
       className={`${playfair.variable} ${dmSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <SmartAppBanner />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
